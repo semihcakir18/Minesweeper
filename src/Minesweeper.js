@@ -4,19 +4,18 @@ import Mine from "./mine.png";
 const Minesweeper = () => {
   const rowSize = 10;
   const colSize = 8;
+  const directions = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+  ];
 
   const checkSurroundingBombs = (board, row, col) => {
-    const directions = [
-      [-1, -1],
-      [-1, 0],
-      [-1, 1],
-      [0, -1],
-      [0, 1],
-      [1, -1],
-      [1, 0],
-      [1, 1],
-    ];
-
     let bombCount = 0;
 
     directions.forEach(([dx, dy]) => {
@@ -64,17 +63,6 @@ const Minesweeper = () => {
   const updatedBoard = updateBoardWithBombCounts(board);
 
   const revealSurroundingCells = (row, col) => {
-    const directions = [
-      [-1, -1],
-      [-1, 0],
-      [-1, 1],
-      [0, -1],
-      [0, 1],
-      [1, -1],
-      [1, 0],
-      [1, 1],
-    ];
-
     directions.forEach(([dx, dy]) => {
       const newRow = row + dx;
       const newCol = col + dy;
@@ -103,17 +91,17 @@ const Minesweeper = () => {
   const revealCounter = () => {
     revealedCount += 1;
     console.log("revealed" + revealedCount);
-    // if (revealedCount === 72) {
-    //   alert("Tebrikler Kazandınız !");
-    // }
+    if (revealedCount === 73) {
+      alert("Tebrikler Kazandınız !");
+    }
   };
 
   const handleClick = (row, col, event) => {
     const cell = event.target;
 
     if (!cell.classList.contains("revealed")) {
-      revealCounter();
       cell.classList.add("revealed");
+      revealCounter();
 
       if (updatedBoard[row][col] === "bomb") {
         cell.innerHTML = `<img src="${Mine}" alt="mine" />`;
@@ -121,9 +109,9 @@ const Minesweeper = () => {
       } else {
         cell.textContent = updatedBoard[row][col];
         if (updatedBoard[row][col] === 0) {
-          revealCounter();
           cell.classList.add("revealed");
           cell.classList.add("green");
+          revealCounter();
           revealSurroundingCells(row, col);
         }
       }
@@ -131,7 +119,7 @@ const Minesweeper = () => {
   };
 
   const handleRightClick = (row, col, event) => {
-    event.preventDefault(); // Sağ tıklama menüsünü engellemek için
+    event.preventDefault();
 
     const cell = event.target;
 
@@ -158,7 +146,7 @@ const Minesweeper = () => {
               onClick={(event) => handleClick(rowIndex, colIndex, event)}
               onContextMenu={(event) =>
                 handleRightClick(rowIndex, colIndex, event)
-              } // Sağ tıklama olayını ekleyin
+              }
             ></div>
           ))
         )}

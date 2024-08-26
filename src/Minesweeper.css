@@ -9,8 +9,6 @@
   text-align: center;
   cursor: pointer;
   color: white;
-  font-size: larger;
-  font: bold;
 }
 
 .revealed {
@@ -35,7 +33,7 @@
 }
 
 .green {
-  background-color: rgba(60, 131, 60, 0.616);
+  background-color: rgba(51, 214, 51, 0.418);
 }
 
 .flagged {
