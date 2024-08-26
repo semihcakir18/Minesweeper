@@ -2,7 +2,8 @@ import "./Minesweeper.css";
 import Mine from "./mine.png";
 
 const Minesweeper = () => {
-  const size = 8;
+  const rowSize = 10;
+  const colSize = 8;
 
   const checkSurroundingBombs = (board, row, col) => {
     const directions = [
@@ -38,13 +39,15 @@ const Minesweeper = () => {
 
   const board = [
     [0, 0, "bomb", 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    ["bomb", 0, 0, 0, 0, "bomb", 0, 0],
     [0, "bomb", 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, "bomb", 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, "bomb", 0, 0, 0, "bomb", 0],
     [0, 0, "bomb", 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, "bomb"],
+    [0, 0, 0, 0, 0, "bomb", 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, "bomb"],
+    [0, 0, "bomb", 0, 0, 0, 0, "bomb"],
+    [0, 0, 0, 0, 0, "bomb", 0, "bomb"],
   ];
 
   const updateBoardWithBombCounts = (board) => {
@@ -84,6 +87,7 @@ const Minesweeper = () => {
       ) {
         const cellElement = document.getElementById(`${newRow}-${newCol}`);
         if (cellElement && !cellElement.classList.contains("revealed")) {
+          revealCounter();
           cellElement.classList.add("revealed");
           cellElement.textContent = updatedBoard[newRow][newCol];
           if (updatedBoard[newRow][newCol] === 0) {
@@ -95,10 +99,20 @@ const Minesweeper = () => {
     });
   };
 
+  let revealedCount = 0;
+  const revealCounter = () => {
+    revealedCount += 1;
+    console.log("revealed" + revealedCount);
+    // if (revealedCount === 72) {
+    //   alert("Tebrikler Kazandınız !");
+    // }
+  };
+
   const handleClick = (row, col, event) => {
     const cell = event.target;
 
     if (!cell.classList.contains("revealed")) {
+      revealCounter();
       cell.classList.add("revealed");
 
       if (updatedBoard[row][col] === "bomb") {
@@ -107,12 +121,10 @@ const Minesweeper = () => {
       } else {
         cell.textContent = updatedBoard[row][col];
         if (updatedBoard[row][col] === 0) {
+          revealCounter();
           cell.classList.add("revealed");
           cell.classList.add("green");
           revealSurroundingCells(row, col);
-
-          cell.classList.add("revealed");
-          // Eğer hücre 0 ise çevresindeki hücreleri aç
         }
       }
     }
@@ -132,7 +144,10 @@ const Minesweeper = () => {
     <div className="center">
       <div
         className="table"
-        style={{ gridTemplateColumns: `repeat(${size}, 40px)` }}
+        style={{
+          gridTemplateColumns: `repeat(${colSize}, 60px)`,
+          gridTemplateRows: `repeat(${rowSize}, 60px)`,
+        }}
       >
         {updatedBoard.map((row, rowIndex) =>
           row.map((cell, colIndex) => (
@@ -144,9 +159,7 @@ const Minesweeper = () => {
               onContextMenu={(event) =>
                 handleRightClick(rowIndex, colIndex, event)
               } // Sağ tıklama olayını ekleyin
-            >
-              {cell}
-            </div>
+            ></div>
           ))
         )}
       </div>
