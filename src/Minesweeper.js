@@ -1,4 +1,5 @@
 import "./Minesweeper.css";
+import Mine from "./mine.png";
 
 const Minesweeper = () => {
   const size = 8;
@@ -84,9 +85,10 @@ const Minesweeper = () => {
         const cellElement = document.getElementById(`${newRow}-${newCol}`);
         if (cellElement && !cellElement.classList.contains("revealed")) {
           cellElement.classList.add("revealed");
-          cellElement.textContent = updatedBoard[newRow][newCol] || ""; // Hücredeki sayıyı göster
+          cellElement.textContent = updatedBoard[newRow][newCol];
           if (updatedBoard[newRow][newCol] === 0) {
-            revealSurroundingCells(newRow, newCol); // Eğer hücre 0 ise çevresindeki hücreleri aç
+            cellElement.classList.add("green");
+            revealSurroundingCells(newRow, newCol);
           }
         }
       }
@@ -100,7 +102,7 @@ const Minesweeper = () => {
       cell.classList.add("revealed");
 
       if (updatedBoard[row][col] === "bomb") {
-        cell.innerHTML = `<img src="mine.png" alt="mine" />`;
+        cell.innerHTML = `<img src="${Mine}" alt="mine" />`;
         alert("Bombaya bastın!");
       } else {
         cell.textContent = updatedBoard[row][col];
@@ -113,6 +115,16 @@ const Minesweeper = () => {
           // Eğer hücre 0 ise çevresindeki hücreleri aç
         }
       }
+    }
+  };
+
+  const handleRightClick = (row, col, event) => {
+    event.preventDefault(); // Sağ tıklama menüsünü engellemek için
+
+    const cell = event.target;
+
+    if (!cell.classList.contains("revealed")) {
+      cell.classList.toggle("flagged");
     }
   };
 
@@ -129,6 +141,9 @@ const Minesweeper = () => {
               id={`${rowIndex}-${colIndex}`}
               className="cell"
               onClick={(event) => handleClick(rowIndex, colIndex, event)}
+              onContextMenu={(event) =>
+                handleRightClick(rowIndex, colIndex, event)
+              } // Sağ tıklama olayını ekleyin
             >
               {cell}
             </div>
