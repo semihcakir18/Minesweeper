@@ -129,29 +129,32 @@ const Minesweeper = () => {
   };
 
   return (
-    <div className="center">
-      <div
-        className="table"
-        style={{
-          gridTemplateColumns: `repeat(${colSize}, 60px)`,
-          gridTemplateRows: `repeat(${rowSize}, 60px)`,
-        }}
-      >
-        {updatedBoard.map((row, rowIndex) =>
-          row.map((cell, colIndex) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              id={`${rowIndex}-${colIndex}`}
-              className="cell"
-              onClick={(event) => handleClick(rowIndex, colIndex, event)}
-              onContextMenu={(event) =>
-                handleRightClick(rowIndex, colIndex, event)
-              }
-            ></div>
-          ))
-        )}
+    <>
+      <h1>Minesweeper</h1>
+      <div className="center">
+        <div
+          className="table"
+          style={{
+            gridTemplateColumns: `repeat(${colSize}, 60px)`,
+            gridTemplateRows: `repeat(${rowSize}, 60px)`,
+          }}
+        >
+          {updatedBoard.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                id={`${rowIndex}-${colIndex}`}
+                className="cell"
+                onClick={(event) => handleClick(rowIndex, colIndex, event)}
+                onContextMenu={(event) =>
+                  handleRightClick(rowIndex, colIndex, event)
+                }
+              ></div>
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
