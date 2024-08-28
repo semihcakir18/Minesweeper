@@ -94,10 +94,15 @@ const Minesweeper = () => {
   };
 
   let revealedCount = 0;
-  const revealCounter = () => {
+  const revealCounter = (row, col) => {
     revealedCount += 1;
-    console.log("revealed" + revealedCount);
-    if (revealedCount === 73) {
+    console.log(
+      "revealed : ",
+      row,
+      col + " /// current count : ",
+      revealedCount
+    );
+    if (revealedCount === rowSize * colSize - numberOfBombs) {
       alert("Tebrikler Kazandınız !");
     }
   };
@@ -106,9 +111,6 @@ const Minesweeper = () => {
     const cell = event.target;
 
     if (!cell.classList.contains("revealed")) {
-      cell.classList.add("revealed");
-      revealCounter();
-
       if (updatedBoard[row][col] === "bomb") {
         if (cell.classList.contains("flagged")) {
           cell.classList.remove("flagged");
@@ -124,17 +126,19 @@ const Minesweeper = () => {
           }, index * 300);
         });
         alert("Bombaya bastın!");
+      } else if (updatedBoard[row][col] === 0) {
+        cell.textContent = updatedBoard[row][col];
+        if (cell.classList.contains("flagged")) {
+          cell.classList.remove("flagged");
+        }
+        cell.classList.add("revealed");
+        cell.classList.add("green");
+        revealCounter(row, col);
+        revealSurroundingCells(row, col);
       } else {
         cell.textContent = updatedBoard[row][col];
-        if (updatedBoard[row][col] === 0) {
-          if (cell.classList.contains("flagged")) {
-            cell.classList.remove("flagged");
-          }
-          cell.classList.add("revealed");
-          cell.classList.add("green");
-          revealCounter();
-          revealSurroundingCells(row, col);
-        }
+        cell.classList.add("revealed");
+        revealCounter(row, col);
       }
     }
   };
