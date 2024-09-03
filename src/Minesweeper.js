@@ -1,7 +1,29 @@
 import "./Minesweeper.css";
+import { useState, useEffect } from "react";
 import Mine from "./mine.png";
+import defaultSound from "./default.mp3";
+import bombSound from "./bomb.mp3";
+import Popup from "./Popup";
 
 const Minesweeper = () => {
+  const [backgroundMusic] = useState(new Audio(defaultSound));
+  const [bombMusic] = useState(new Audio(bombSound));
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+
+  useEffect(() => {
+    console.log("Use Effect Calisti");
+    backgroundMusic.loop = true;
+    backgroundMusic.play().catch((error) => {
+      console.error("Background music play error:", error);
+    });
+
+    return () => {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+    };
+  }, [backgroundMusic]);
+
   const rowSize = 10;
   const colSize = 8;
   const numberOfBombs = 10;
@@ -100,10 +122,13 @@ const Minesweeper = () => {
       "revealed : ",
       row,
       col + " /// current count : ",
-      revealedCount
+      revealedCount,
+      "oyunun biteceği sayı : ",
+      rowSize * colSize - numberOfBombs
     );
     if (revealedCount === rowSize * colSize - numberOfBombs) {
-      alert("Tebrikler Kazandınız !");
+      setPopupMessage("Tebrikler Kazandınız!");
+      setShowPopup(true);
     }
   };
 
@@ -115,7 +140,13 @@ const Minesweeper = () => {
         if (cell.classList.contains("flagged")) {
           cell.classList.remove("flagged");
         }
+
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+
+        bombMusic.play();
         cell.innerHTML = `<img src="${Mine}" alt="mine" />`;
+
         bombLocations.forEach(([dx, dy], index) => {
           setTimeout(() => {
             const bombCell = document.getElementById(`${dx}-${dy}`);
@@ -125,7 +156,8 @@ const Minesweeper = () => {
             bombCell.innerHTML = `<img src="${Mine}" alt="mine" />`;
           }, index * 300);
         });
-        alert("Bombaya bastın!");
+        setPopupMessage("Bombaya bastın!");
+        setShowPopup(true);
       } else if (updatedBoard[row][col] === 0) {
         cell.textContent = updatedBoard[row][col];
         if (cell.classList.contains("flagged")) {
@@ -178,6 +210,7 @@ const Minesweeper = () => {
             ))
           )}
         </div>
+        {showPopup && <Popup message={popupMessage} />}
       </div>
     </>
   );
